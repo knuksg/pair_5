@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block body %}
+  review의 인덱스
+  <div>
+    {% for review in reviews %}
+      <a href="{% url 'reviews:detail' review.pk %}">{{review.title }}</a>
+    {% endfor %}
+  </div>
+{% endblock body %}
