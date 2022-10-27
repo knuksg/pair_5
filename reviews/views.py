@@ -99,3 +99,6 @@ def comments_delete(request, review_pk, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
     comment.delete()
     return redirect('reviews:detail', review_pk)
+
+def main(request):
+    return render(request, 'reviews/main.html')

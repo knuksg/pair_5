@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-index
+<h1>유저 목록</h1>
 {% for user in users %}
-{{ user.username }}
-<a href="{% url 'accounts:detail' user.pk %}">프로필 페이지</a>
+<p>
+  {{ user.username }}
+  <a href="{% url 'accounts:detail' user.pk %}">프로필 페이지</a>
+</p>
 {% endfor %}
 {% endblock body %}

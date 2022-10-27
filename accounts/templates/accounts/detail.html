@@ -1,4 +1,21 @@
 {% extends 'base.html' %}
 {% block body %}
-{{ user.username }}님의 프로필 페이지입니다.
+<h1>{{ user.username }}님의 프로필 페이지입니다.</h1>
+{% comment %} 팔로우 버튼 {% endcomment %}
+{% if request.user.is_authenticated %}
+  {% if request.user != user %}
+  <a href="{% url 'accounts:follow' user.pk %}">
+    {% if request.user in user.followings.all %}
+    팔로우 취소
+    {% else %}
+    팔로우
+    {% endif %}
+  </a>
+  {% endif %}
+{% endif %}
+{% comment %} 유저 게시글 목록 {% endcomment %}
+<h2>작성한 게시글 목록</h2>
+{% for review in reviews %}
+<p><a href="{% url 'reviews:detail' review.pk %}">{{ review.title }}</a></p>
+{% endfor %}
 {% endblock body %}

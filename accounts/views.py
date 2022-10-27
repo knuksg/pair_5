@@ -4,6 +4,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from accounts.forms import CustomUserCreationForm
+from reviews.models import Review
 
 # Create your views here.
 def index(request):
@@ -29,8 +30,10 @@ def signup(request):
 
 def detail(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
+    reviews = Review.objects.filter(user=user)
     context = {
         'user': user,
+        'reviews': reviews,
     }
     return render(request, 'accounts/detail.html', context)
 
@@ -50,3 +53,11 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('accounts:index')
+
+def follow(request, user_pk):
+    user = get_user_model().objects.get(pk=user_pk)
+    if request.user in user.followings.all():
+        user.followings.remove(request.user)
+    else:
+        user.followings.add(request.user)
+    return redirect('accounts:detail', user_pk)
