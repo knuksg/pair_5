@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ReviewForm, CommentForm
 from django.contrib import messages
 from .models import Review, Comment
@@ -72,12 +73,31 @@ def delete(request, review_pk):
 
 @login_required
 def like(request, review_pk):
-    reviews = Review.objects.get(pk=review_pk)
-    if request.user in reviews.like_user.all():
-      reviews.like_user.remove(request.user)
+
+    review = get_object_or_404(Review, pk=review_pk)
+
+    if request.user in review.like_user.all():
+      # 좋아요 삭제
+      review.like_user.remove(request.user)
+      is_liked = False
     else:
-      reviews.like_user.add(request.user)
-    return redirect('reviews:detail', review_pk)
+      # 좋아요 추가
+      review.like_user.add(request.user)
+      is_liked = True
+    #  리다이렉트
+
+    context = {
+      'isLiked': is_liked,
+      'likeCount': review.like_user.count(),
+    }
+    return JsonResponse(context)
+
+    # reviews = Review.objects.get(pk=review_pk)
+    # if request.user in reviews.like_user.all():
+    #   reviews.like_user.remove(request.user)
+    # else:
+    #   reviews.like_user.add(request.user)
+    # return redirect('reviews:detail', review_pk)
 
 
 @login_required

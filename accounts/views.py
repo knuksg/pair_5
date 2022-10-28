@@ -33,8 +33,6 @@ def signup(request):
 def detail(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
     reviews = Review.objects.filter(user=user)
-    review_grade = Review.objects.get(pk=user_pk)
-
     
     followers = user.followers.all()
     followings = user.followings.all()
