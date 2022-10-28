@@ -3,9 +3,20 @@
 
 {% block body %}
   <h1>{{ reviews.title }}</h1>
+
   <p class="mb-0">{{ reviews.movie_title }}
     |
-    {{ reviews.grade }}점</p>
+      {% if reviews.grade == 1 %}
+      <div style="font-size: 16px;"> ⭐ </div>
+      {% elif reviews.grade == 2 %}
+      <div style="font-size: 16px;"> ⭐⭐ </div>
+      {% elif reviews.grade == 3 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐ </div>
+      {% elif reviews.grade == 4 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐ </div>
+      {% elif reviews.grade == 5 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐⭐ </div>
+  {% endif %}</p>
   {% comment %} 좋아요 {% endcomment %}
   {% if request.user.is_authenticated %}
   <div class="my-2">
@@ -26,6 +37,7 @@
     <a href="{% url 'reviews:update' reviews.pk %}" class="btn btn-outline-success btn-sm">수정</a>
     <a href="{% url 'reviews:delete' reviews.pk %}" class="btn btn-outline-danger btn-sm">삭제</a>
   </div>
+
 
   <h4 class="mt-5 mb-3">댓글 작성</h4>
   <form action="{% url 'reviews:comments' reviews.pk %}" method="POST">

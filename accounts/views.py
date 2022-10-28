@@ -9,6 +9,8 @@ from reviews.models import Review
 # Create your views here.
 def index(request):
     users = get_user_model().objects.all()
+
+
     context = {
         'users': users,
     }
@@ -31,9 +33,17 @@ def signup(request):
 def detail(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
     reviews = Review.objects.filter(user=user)
+    review_grade = Review.objects.get(pk=user_pk)
+
+    
+    followers = user.followers.all()
+    followings = user.followings.all()
+    
     context = {
         'user': user,
         'reviews': reviews,
+        'followers': followers,
+        'followings': followings,
     }
     return render(request, 'accounts/detail.html', context)
 
@@ -52,12 +62,13 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
+    
     return redirect('accounts:index')
 
 def follow(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
-    if request.user in user.followings.all():
-        user.followings.remove(request.user)
+    if request.user in user.followers.all():
+        user.followers.remove(request.user)
     else:
-        user.followings.add(request.user)
+        user.followers.add(request.user)
     return redirect('accounts:detail', user_pk)

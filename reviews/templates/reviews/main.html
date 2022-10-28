@@ -1,4 +1,59 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>Main Page</h1>
+<div class="d-flex justify-content-center">
+  <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner" role="listbox">
+      <div class="carousel-item position-relative active">
+        <img src="https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg" class="d-block img-fluid" style="height: 85vh; width: auto;" alt="First slide">
+        <div class="carousel-info d-none position-absolute top-50 text-center m-auto bg-black text-white opacity-75" style="width: 100%; height: 50%;">
+          <h1 class="mt-3">The Godfather (1972)</h1>
+          <p class="mx-3">Peter Clemenza: Leave the gun. Take the cannoli.</p>
+        </div>
+      </div>
+      <div class="carousel-item position-relative">
+        <img src="https://m.media-amazon.com/images/M/MV5BNDE4OTMxMTctNmRhYy00NWE2LTg3YzItYTk3M2UwOTU5Njg4XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg" class="d-block img-fluid" style="height: 85vh; width: auto;" alt="Second slide">
+        <div class="carousel-info d-none position-absolute top-50 text-center m-auto bg-black text-white opacity-75" style="width: 100%; height: 50%;">
+          <h1 class="mt-3">Schindler's List (1993)</h1>
+          <p class="mx-3">Itzhak Stern: It's Hebrew, it's from the Talmud. It says, "Whoever saves one life, saves the world entire."</p>
+        </div>
+      </div>
+      <div class="carousel-item position-relative">
+        <img src="https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX700_.jpg" class="d-block img-fluid" style="height: 85vh; width: auto;" alt="Third slide">
+        <div class="carousel-info d-none position-absolute top-50 text-center m-auto bg-black text-white opacity-75" style="width: 100%; height: 50%;">
+          <h1 class="mt-3">Inception (2010)</h1>
+          <p class="mx-3">Cobb: What is the most resilient parasite? Bacteria? A virus? An intestinal worm? An idea. Resilient... highly contagious. Once an idea has taken hold of the brain it's almost impossible to eradicate. An idea that is fully formed - fully understood - that sticks; right in there somewhere.</p>
+        </div>
+      </div>
+      <div class="carousel-item position-relative">
+        <img src="https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg" class="d-block img-fluid" style="height: 85vh; width: auto;" alt="Fourth slide">
+        <div class="carousel-info d-none position-absolute top-50 text-center m-auto bg-black text-white opacity-75" style="width: 100%; height: 50%;">
+          <h1 class="mt-3">The Matrix (1999)</h1>
+          <p class="mx-3">Morpheus: What is real? How do you define 'real'? If you're talking about what you can feel, what you can smell, what you can taste and see, then 'real' is simply electrical signals interpreted by your brain.</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+      </button>
+  </div>
+</div>
+<script>
+  const CarouselImgs = document.querySelectorAll('.carousel-item')
+  CarouselImgs.forEach(CarouselImg => {
+    CarouselImg.addEventListener('mouseover', e => {
+      const CarouselInfo = CarouselImg.querySelector('.carousel-info')
+      CarouselInfo.classList.remove('d-none')
+      console.log('hi')
+    })
+    CarouselImg.addEventListener('mouseout', e => {
+      const CarouselInfo = CarouselImg.querySelector('.carousel-info')
+      CarouselInfo.classList.add('d-none')
+    })
+  })
+</script>
 {% endblock body %}
