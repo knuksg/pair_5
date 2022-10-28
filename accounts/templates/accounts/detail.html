@@ -11,15 +11,15 @@
           <div class="col-8">
             <div class="fs-3 fw-bold">{{ user.username }}</div>
           </div>
-          <div class="col-4 btn btn-dark">
+          <div class="col-4">
             {% if request.user.is_authenticated %}
               {% if request.user != user %}
                 <form id="follow-form" data-user-id="{{ user.pk }}">
                   {% csrf_token %}
                   {% if request.user in user.followers.all %}
-                    <input type="submit" value="언팔로우">
+                    <input class="btn btn-dark btn-lg" type="submit" value="언팔로우" style="width: 100px;">
                   {% else %}
-                    <input type="submit" value="팔로우">
+                    <input class="btn btn-dark btn-lg" type="submit" value="팔로우" style="width: 100px;">
                   {% endif %}
                 </form>
               {% else %}
