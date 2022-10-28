@@ -1,10 +1,28 @@
 {% extends 'base.html' %}
 
 {% block body %}
-  review의 인덱스
-  <div>
+  <h3 class="mb-4">리뷰 목록</h3>
+  <div class="row">
+
     {% for review in reviews %}
-      <a href="{% url 'reviews:detail' review.pk %}">{{review.title }}</a>
+      <div class="col-3 mb-5">
+        <div class="card shadow mb-5 bg-body rounded" style="width: 18rem; height: 30rem;">
+          {% if review.image %}
+            <img src="{{review.image.url}}" class="card-img-top" alt="" style="width:286px; height: 264px;">
+          {% else %}
+            <img src="https://dummyimage.com/600x400/ffffff/b8b8b8&text=No+Image" class="card-img-top" alt="" style="width:286px; height: 286px;">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title text-nowrap text-truncate" style="width:17rem;">{{ review.title }}</h5>
+            <p class="fs-6 fw-light text-nowrap text-truncate" style="width:17rem;">{{ review.movie_title }}</p>
+            <p>
+              <a href="{% url 'accounts:detail' review.user.pk %}" class="text-decoration-none">{{ review.user.username }}</a>
+            </p>
+            <a href="{% url 'reviews:detail' review.pk %}" class="btn btn-primary">더 보기</a>
+          </div>
+        </div>
+      </div>
     {% endfor %}
+
   </div>
 {% endblock body %}

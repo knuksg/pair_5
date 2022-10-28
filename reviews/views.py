@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
-    reviews = Review.objects.all()
+    reviews = Review.objects.order_by('-pk')
     context = {
         'reviews':reviews,
     }
@@ -37,7 +37,7 @@ def detail(request, review_pk):
     
     context = {
         'reviews': reviews,
-        "comments": reviews.comment_set.all(),
+        "comments": reviews.comment_set.order_by('-pk'),
         'comment_form': comment_form,
     }
     return render(request,'reviews/detail.html', context)
