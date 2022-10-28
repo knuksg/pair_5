@@ -1,21 +1,61 @@
 {% extends 'base.html' %}
 {% block body %}
-<h1>{{ user.username }}님의 프로필 페이지입니다.</h1>
-{% comment %} 팔로우 버튼 {% endcomment %}
-{% if request.user.is_authenticated %}
-  {% if request.user != user %}
-  <a href="{% url 'accounts:follow' user.pk %}">
-    {% if request.user in user.followings.all %}
-    팔로우 취소
-    {% else %}
-    팔로우
-    {% endif %}
-  </a>
-  {% endif %}
-{% endif %}
-{% comment %} 유저 게시글 목록 {% endcomment %}
-<h2>작성한 게시글 목록</h2>
-{% for review in reviews %}
-<p><a href="{% url 'reviews:detail' review.pk %}">{{ review.title }}</a></p>
-{% endfor %}
-{% endblock body %}
+
+<div class='container text-center' style="max-width: 800px">
+  <div class="row">
+    <div class="col-4">
+      <img src="https://via.placeholder.com/150" alt="" class="rounded-circle">
+    </div>
+    <div class="col-8">
+      <div class='row mb-5'>
+        <div class="col-8">
+          <div class="fs-3 fw-bold">{{ user.username }}</div>
+        </div>
+        <div class="col-4 btn btn-dark">
+        {% if request.user.is_authenticated %}
+          {% if request.user != user %}
+          <a href="{% url 'accounts:follow' user.pk %}" class="text-white"style="text-decoration:none">
+            {% if request.user in user.followers.all %}
+            팔로우 취소
+            {% else %}
+            팔로우
+            {% endif %}
+          {% else %}
+            프로필 편집
+          {% endif %}
+          </a>
+        {% endif %}
+        </div>
+      </div>
+      <div class='d-flex justify-content-evenly'>
+        <div class=''>게시글 {{ reviews.count }}</div>
+        <div class=''>팔로워 {{ followers.count }}</div>
+        <div class=''>팔로우 {{ followings.count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class='mt-5 mb-4 fw-bold'>작성한 게시글 목록</h2>
+  <div class="d-flex gap-3">
+    {% for review in reviews %}
+    <div class="card d-flex" style="width: 12rem;">
+      <div class="card-body">
+        <div class="card-title fs-4 fw-bold">{{ review.title }}</div>
+        <p class="card-text"> {{ review.content }}</p>
+      </div>
+      {% if review.grade == 1 %}
+      <div style="font-size: 16px;"> ⭐ </div>
+      {% elif review.grade == 2 %}
+      <div style="font-size: 16px;"> ⭐⭐ </div>
+      {% elif review.grade == 3 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐ </div>
+      {% elif review.grade == 4 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐ </div>
+      {% elif review.grade == 5 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐⭐ </div>
+      {% endif %}
+      <a href="{% url 'reviews:detail' review.pk %}" class="btn btn-primary m-2 fw-bold">보러가기</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endblock body %}
