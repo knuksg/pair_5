@@ -102,15 +102,19 @@ def like(request, review_pk):
 
 @login_required
 def comments(request, review_pk):
-    reviews = Review.objects.get(pk=review_pk)
+    reviews = get_object_or_404(Review, pk=review_pk)
     comment_form = CommentForm(request.POST)
     if comment_form.is_valid():
       comment = comment_form.save(commit=False)
       comment.reviews = reviews
       comment.user = request.user
       comment.save()
+      context = {
+          'content': comment.content,
+          'username': comment.user.username,
+      }
 
-    return redirect('reviews:detail', reviews.pk)
+    return JsonResponse(context)
 
 
 @login_required
