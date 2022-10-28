@@ -1,36 +1,45 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<div class='container text-center' style="max-width: 800px">
-  <div class="row">
-    <div class="col-4">
-      <img src="https://via.placeholder.com/150" alt="" class="rounded-circle">
-    </div>
-    <div class="col-8">
-      <div class='row mb-5'>
-        <div class="col-8">
-          <div class="fs-3 fw-bold">{{ user.username }}</div>
-        </div>
-        <div class="col-4 btn btn-dark">
-        {% if request.user.is_authenticated %}
-          {% if request.user != user %}
-          <a href="{% url 'accounts:follow' user.pk %}" class="text-white"style="text-decoration:none">
-            {% if request.user in user.followers.all %}
-            팔로우 취소
-            {% else %}
-            팔로우
-            {% endif %}
-          {% else %}
-            프로필 편집
+  <div class='container text-center' style="max-width: 800px">
+    <div class="row">
+      <div class="col-4">
+        <img src="https://via.placeholder.com/150" alt="" class="rounded-circle">
+      </div>
+      <div class="col-8">
+        <div class='row mb-5'>
+          <div class="col-8">
+            <div class="fs-3 fw-bold">{{ user.username }}</div>
+          </div>
+          <div class="col-4 btn btn-dark">
+            {% if request.user.is_authenticated %}
+              {% if request.user != user %}
+                <form id="follow-form" data-user-id="{{ user.pk }}">
+                  {% csrf_token %}
+                  {% if request.user in user.followers.all %}
+                    <input type="submit" value="언팔로우">
+                  {% else %}
+                    <input type="submit" value="팔로우">
+                  {% endif %}
+                </form>
+              {% else %}
+                프로필 편집
+              {% endif %}
+            </a>
           {% endif %}
-          </a>
-        {% endif %}
         </div>
       </div>
       <div class='d-flex justify-content-evenly'>
-        <div class=''>게시글 {{ reviews.count }}</div>
-        <div class=''>팔로워 {{ followers.count }}</div>
-        <div class=''>팔로우 {{ followings.count }}</div>
+        <div class=''>게시글
+          {{ reviews.count }}</div>
+          <div class="position-relative" style="width: 100px;">팔로워
+            <div id="followers-count" class='position-absolute end-0'>
+            {{ followers.count }}</div>
+          </div>
+          <div class="position-relative" style="width: 100px;">팔로잉
+            <div id="followings-count" class='position-absolute end-0'>
+            {{ followings.count }}</div>
+          </div>
       </div>
     </div>
   </div>
@@ -38,24 +47,73 @@
   <h2 class='mt-5 mb-4 fw-bold'>작성한 게시글 목록</h2>
   <div class="d-flex gap-3">
     {% for review in reviews %}
-    <div class="card d-flex" style="width: 12rem;">
-      <div class="card-body">
-        <div class="card-title fs-4 fw-bold">{{ review.title }}</div>
-        <p class="card-text"> {{ review.content }}</p>
+      <div class="card d-flex" style="width: 12rem;">
+        <div class="card-body">
+          <div class="card-title fs-4 fw-bold">{{ review.title }}</div>
+          <p class="card-text">
+            {{ review.content }}</p>
+        </div>
+        {% if review.grade == 1 %}
+          <div style="font-size: 16px;">
+            ⭐
+          </div>
+        {% elif review.grade == 2 %}
+          <div style="font-size: 16px;">
+            ⭐⭐
+          </div>
+        {% elif review.grade == 3 %}
+          <div style="font-size: 16px;">
+            ⭐⭐⭐
+          </div>
+        {% elif review.grade == 4 %}
+          <div style="font-size: 16px;">
+            ⭐⭐⭐⭐
+          </div>
+        {% elif review.grade == 5 %}
+          <div style="font-size: 16px;">
+            ⭐⭐⭐⭐⭐
+          </div>
+        {% endif %}
+        <a href="{% url 'reviews:detail' review.pk %}" class="btn btn-primary m-2 fw-bold">보러가기</a>
       </div>
-      {% if review.grade == 1 %}
-      <div style="font-size: 16px;"> ⭐ </div>
-      {% elif review.grade == 2 %}
-      <div style="font-size: 16px;"> ⭐⭐ </div>
-      {% elif review.grade == 3 %}
-      <div style="font-size: 16px;"> ⭐⭐⭐ </div>
-      {% elif review.grade == 4 %}
-      <div style="font-size: 16px;"> ⭐⭐⭐⭐ </div>
-      {% elif review.grade == 5 %}
-      <div style="font-size: 16px;"> ⭐⭐⭐⭐⭐ </div>
-      {% endif %}
-      <a href="{% url 'reviews:detail' review.pk %}" class="btn btn-primary m-2 fw-bold">보러가기</a>
-    </div>
     {% endfor %}
   </div>
-  {% endblock body %}
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const form = document.querySelector('#follow-form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      const userId = event.target.dataset.userId
+
+      axios({
+        method: 'post',
+        url: `/accounts/${userId}/follow/`,
+        headers: {
+          'X-CSRFToken': csrftoken
+        }
+      })
+        .then((response) => {
+          const isFollowed = response.data.is_followed
+          const followBtn = document.querySelector('#follow-form > input[type=submit]')
+          if (isFollowed === true) {
+            followBtn.value = '언팔로우'
+          } else {
+            followBtn.value = '팔로우'
+          }
+          const followersCountTag = document.querySelector('#followers-count')
+          const followingsCountTag = document.querySelector('#followings-count')
+          const followersCount = response.data.followers_count
+          const followingsCount = response.data.followings_count 
+          followersCountTag.innerText = followersCount 
+          followingsCountTag.innerText = followingsCount
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
+    })
+  </script>
+
+{% endblock body %}

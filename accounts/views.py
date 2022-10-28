@@ -1,8 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.views.decorators.http import require_POST
 from accounts.forms import CustomUserCreationForm
 from reviews.models import Review
 
@@ -63,10 +66,24 @@ def logout(request):
     
     return redirect('accounts:index')
 
+@require_POST
 def follow(request, user_pk):
-    user = get_user_model().objects.get(pk=user_pk)
-    if request.user in user.followers.all():
-        user.followers.remove(request.user)
-    else:
-        user.followers.add(request.user)
-    return redirect('accounts:detail', user_pk)
+    if request.user.is_authenticated:
+        User = get_user_model()
+        me = request.user
+        you = User.objects.get(pk=user_pk) 
+        if me != you:
+            if you.followers.filter(pk=me.pk).exists(): 
+                you.followers.remove(me)
+                is_followed = False
+            else: 
+                you.followers.add(me) 
+                is_followed = True
+            context = {
+            'is_followed': is_followed, 
+            'followers_count': you.followers.count(), 
+            'followings_count': you.followings.count(),
+            }
+            return JsonResponse(context)
+        return redirect('accounts:detail', you.username)
+    return redirect('accounts:login')
