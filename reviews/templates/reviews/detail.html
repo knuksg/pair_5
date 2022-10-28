@@ -20,13 +20,11 @@
   {% comment %} 좋아요 {% endcomment %}
   {% if request.user.is_authenticated %}
   <div class="my-2">
-  <a href="{% url 'reviews:like' reviews.pk %}">
     {% if request.user in reviews.like_user.all %}
-      <i id="like-btn" data-review-id="{{ reviews.pk }}" class="bi bi-heart-fill text-danger"></i>
+      <i id="like-btn" data-reviews-id="{{ reviews.pk }}" class="bi bi-heart-fill text-danger"></i>
       {% else %}
-      <i id="like-btn" data-review-id="{{ reviews.pk }}" class="bi bi-heart text-danger"></i>
+      <i id="like-btn" data-reviews-id="{{ reviews.pk }}" class="bi bi-heart text-danger"></i>
       {% endif %}
-  </a>
   {% endif %}
     |
     <span id="like-count">{{ reviews.like_user.count }}</span>
@@ -61,12 +59,18 @@
   // quertySelector로 id가 like-btn인 것을 선택
   const likeBtn = document.querySelector('#like-btn')
   // 2. 좋아요 버튼 클릭하면, 함수 실행
-  likeBtn.addEventListener('click', funtion(event) {
+    likeBtn.addEventListener('click', function (event) {
+    // 서버로 비동기 요청을 하고 싶음
+    console.log(event.target.dataset)
     axios({
       method: 'get',
       url: `/reviews/${event.target.dataset.reviewsId}/like/`
     })
     .then(response => {
+      console.log(response)
+      console.log(response.data)
+      // event.target.classList.toggle('bi-heart')
+      // event.target.classList.toggle('bi-heart-fill')
       if (response.data.isLiked === true) {
         event.target.classList.add('bi-heart-fill')
         event.target.classList.remove('bi-heart')
@@ -78,7 +82,6 @@
       likeCount.innerText = response.data.likeCount
     })
   })
-
 </script>
 
 {% endblock body %}
