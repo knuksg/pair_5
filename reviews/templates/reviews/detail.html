@@ -3,7 +3,17 @@
 {% block body %}
   <h1>{{ reviews.title }}</h1>
   <p>{{ reviews.movie_title }}</p>
-  <p>{{ reviews.grade }}</p>
+  {% if reviews.grade == 1 %}
+      <div style="font-size: 16px;"> ⭐ </div>
+      {% elif reviews.grade == 2 %}
+      <div style="font-size: 16px;"> ⭐⭐ </div>
+      {% elif reviews.grade == 3 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐ </div>
+      {% elif reviews.grade == 4 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐ </div>
+      {% elif reviews.grade == 5 %}
+      <div style="font-size: 16px;"> ⭐⭐⭐⭐⭐ </div>
+  {% endif %}
   <p>{{ reviews.content }}</p>
 {% if request.user in reviews.like_user.all %}
   <a href="{% url 'reviews:like' reviews.pk %}">좋아요취소</a> | {{ reviews.like_user.count }}
